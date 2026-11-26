@@ -136,8 +136,11 @@ export function normalizeHexColor(input: string, fallback = '#d4121f'): string {
 }
 
 export function sanitizeCarNumber(raw: string): string {
-  const digits = raw.replace(/[^0-9A-Za-z]/g, '').toUpperCase().slice(0, 2);
-  return digits.length > 0 ? digits : '26';
+  const digits = raw.replace(/[^0-9]/g, '');
+  if (!digits) return '26';
+  const parsed = Number.parseInt(digits, 10);
+  if (!Number.isFinite(parsed) || parsed < 1) return '26';
+  return String(Math.min(99, parsed));
 }
 
 export function getCrashPreset(

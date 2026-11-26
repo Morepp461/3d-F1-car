@@ -23,6 +23,7 @@ import {
   createContactShadowTexture,
   createStudioFloorTexture,
 } from '../three/f1Materials';
+import { TelemetryOverlay } from './TelemetryOverlay';
 
 export interface F1ViewportProps {
   livery: LiveryId;
@@ -534,6 +535,7 @@ export function F1ViewportCanvas({
         data-testid="f1-3d-canvas-container"
         className="w-full h-full cursor-grab active:cursor-grabbing"
       />
+      <TelemetryOverlay aeroMode={aeroMode} speedKmh={speedKmh} />
       {contextLost && (
         <div className="absolute inset-0 flex items-center justify-center bg-[#0c0f16] text-slate-200">
           <div className="text-center space-y-2 px-6">

@@ -82,8 +82,13 @@ test('50 unique decal designs, 8 sponsor slots, hex normalizer, car number, and 
   assert.equal(normalizeHexColor('#ABC'), '#aabbcc');
   assert.equal(normalizeHexColor('invalid', '#123456'), '#123456');
 
+  assert.equal(sanitizeCarNumber('1'), '1');
   assert.equal(sanitizeCarNumber('44'), '44');
-  assert.equal(sanitizeCarNumber('007'), '00');
+  assert.equal(sanitizeCarNumber('99'), '99');
+  assert.equal(sanitizeCarNumber('05'), '5');
+  assert.equal(sanitizeCarNumber('120'), '99');
+  assert.equal(sanitizeCarNumber('0'), '26');
+  assert.equal(sanitizeCarNumber('00'), '26');
   assert.equal(sanitizeCarNumber('!!!'), '26');
 
   const intact = getCrashPreset('intact');

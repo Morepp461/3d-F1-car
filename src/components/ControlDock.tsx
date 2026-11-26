@@ -533,37 +533,73 @@ export function ControlDock({
             {activeTab === 'sponsor' && (
               <div className="space-y-2.5">
                 <div className="flex flex-wrap items-center justify-between gap-3">
-                  {/* Car Racing Number */}
-                  <div className="flex items-center gap-2">
+                  {/* Car Racing Number (1-99) */}
+                  <div className="flex items-center gap-1.5">
                     <label htmlFor="car-number-input" className="text-[11px] font-medium text-slate-400 whitespace-nowrap">
-                      Car Number:
+                      Car Number (1–99):
                     </label>
+                    <button
+                      type="button"
+                      aria-label="Decrease car number"
+                      onClick={() => {
+                        const n = Number.parseInt(carNumber, 10) || 26;
+                        onChangeCarNumber(String(n <= 1 ? 99 : n - 1));
+                      }}
+                      className="px-1.5 py-1 rounded border border-white/12 bg-white/5 text-xs text-slate-300 hover:text-white"
+                    >
+                      −
+                    </button>
                     <input
                       id="car-number-input"
                       data-testid="car-number-input"
                       type="text"
+                      inputMode="numeric"
                       maxLength={2}
                       value={carNumber}
-                      onChange={(e) => onChangeCarNumber(e.target.value)}
+                      onChange={(e) => {
+                        const digits = e.target.value.replace(/[^0-9]/g, '').slice(0, 2);
+                        if (digits === '') {
+                          onChangeCarNumber('');
+                          return;
+                        }
+                        const parsed = Number.parseInt(digits, 10);
+                        if (parsed >= 1 && parsed <= 99) {
+                          onChangeCarNumber(String(parsed));
+                        }
+                      }}
+                      onBlur={() => {
+                        const parsed = Number.parseInt(carNumber, 10);
+                        if (!Number.isFinite(parsed) || parsed < 1 || parsed > 99) {
+                          onChangeCarNumber('26');
+                        }
+                      }}
                       placeholder="26"
-                      className="w-14 rounded-md border border-white/15 bg-black/50 px-2 py-1 text-sm font-display font-bold text-amber-400 text-center uppercase focus:outline-amber-400"
+                      className="w-12 rounded-md border border-white/15 bg-black/50 px-1.5 py-1 text-sm font-display font-bold text-amber-400 text-center focus:outline-amber-400"
                     />
-                    <div className="flex items-center gap-1">
-                      {['1', '16', '26', '44', '81'].map((num) => (
-                        <button
-                          key={num}
-                          type="button"
-                          onClick={() => onChangeCarNumber(num)}
-                          className={`px-2 py-1 rounded border text-[11px] font-mono-tech transition-colors ${
-                            carNumber === num
-                              ? 'border-amber-400 bg-amber-500/20 text-amber-300'
-                              : 'border-white/10 bg-white/5 text-slate-300 hover:text-white'
-                          }`}
-                        >
-                          {num}
-                        </button>
+                    <button
+                      type="button"
+                      aria-label="Increase car number"
+                      onClick={() => {
+                        const n = Number.parseInt(carNumber, 10) || 26;
+                        onChangeCarNumber(String(n >= 99 ? 1 : n + 1));
+                      }}
+                      className="px-1.5 py-1 rounded border border-white/12 bg-white/5 text-xs text-slate-300 hover:text-white"
+                    >
+                      +
+                    </button>
+                    <select
+                      aria-label="Pick car number 1 to 99"
+                      data-testid="car-number-select"
+                      value={Number.parseInt(carNumber, 10) >= 1 && Number.parseInt(carNumber, 10) <= 99 ? String(Number.parseInt(carNumber, 10)) : '26'}
+                      onChange={(e) => onChangeCarNumber(e.target.value)}
+                      className="rounded-md border border-white/15 bg-black/50 px-1.5 py-1 text-xs font-mono-tech text-slate-200 focus:outline-amber-400"
+                    >
+                      {Array.from({ length: 99 }, (_, idx) => String(idx + 1)).map((num) => (
+                        <option key={num} value={num}>
+                          #{num}
+                        </option>
                       ))}
-                    </div>
+                    </select>
                   </div>
 
                   {/* Selected Sponsor Slot Editor */}
