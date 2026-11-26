@@ -1,0 +1,33 @@
+name: Dependency Compatibility
+
+on:
+  push:
+    branches:
+      - main
+      - chore/validate-react-vite-ts-compat
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: TypeScript and production build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies from lockfile
+        run: bun install --frozen-lockfile
+
+      - name: TypeScript validation
+        run: bun run lint
+
+      - name: Production build
+        run: bun run build
